@@ -32,7 +32,9 @@ def validateJwt(token):
         if not token:
             return {'error': 'Authorization token is missing','code': 400, 'status': False}
         try:
-            token = token.split(' ')[1]
+            if token.startswith('Bearer '):
+              token = token.split(' ')[1]
+            
             decoded_token = jwt.decode(token, JWT_KEY, algorithms=["HS256"])
             return {'user': decoded_token,'status': True}
         except ExpiredSignatureError:

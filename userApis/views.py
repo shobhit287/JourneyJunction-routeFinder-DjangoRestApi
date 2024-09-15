@@ -51,6 +51,7 @@ class User(APIView):
         }
     )
     def get(self, request, id=None):
+        print(request.headers)
         validateToken = validateJwt(request.headers.get('Authorization'))
         if validateToken['status']:
             if id:

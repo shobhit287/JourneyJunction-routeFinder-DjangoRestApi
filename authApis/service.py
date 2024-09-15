@@ -58,7 +58,6 @@ def validateUser(payload):
 
 
 def verifyResetToken(token):
-    token = f'Bearer {token}'
     validateToken = jwt.validateJwt(token)
     if validateToken['status']:
         return JsonResponse({"redirectUrl":f"journey-junction/reset-password?token={token}"},status=200)
@@ -67,7 +66,6 @@ def verifyResetToken(token):
 
 def resetPassword(payload, token):
     try:
-        token = f'Bearer {token}'
         validateToken = jwt.validateJwt(token)
         if validateToken['status']:
             user= User.objects.get(user_id = validateToken['user']['userId'])

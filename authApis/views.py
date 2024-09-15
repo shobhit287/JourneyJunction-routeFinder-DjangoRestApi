@@ -61,10 +61,12 @@ class AuthForgetPassword(APIView):
         else:
             return JsonResponse({'error':'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
         
-      def get(self,request, token):
+      
+
+class AuthVerifyToken(APIView):  
+    def get(self,request, token):
             response = service.verifyResetToken(token)
-            return response
-            
+            return response          
 
 class AuthResetPassword(APIView):
       @swagger_auto_schema(
