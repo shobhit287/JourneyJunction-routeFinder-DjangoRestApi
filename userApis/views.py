@@ -3,23 +3,28 @@ from rest_framework.views import APIView
 from . import service
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
+from authApis.jwt import validateJwt
 from .serializers import UserSerializer
-from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from django.http import JsonResponse
 from .serializers import UserSerializer
 from . import service
 
 class User(APIView):
     @swagger_auto_schema(
-        request_body=UserSerializer,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'firstName': openapi.Schema(type=openapi.TYPE_STRING),
+                'lastName': openapi.Schema(type=openapi.TYPE_STRING),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_PASSWORD)
+            },
+            required=['firstName', 'lastName', 'email', 'password']
+        ),
         responses={
             201: openapi.Response(
-                description="User created successfully",
-                schema=UserSerializer
+                description="User Cretaed Successfully"
             ),
             400: openapi.Response(
                 description="Bad request"
@@ -46,19 +51,29 @@ class User(APIView):
         }
     )
     def get(self, request, id=None):
-        if id:
-            response = service.findOne(id)
-            return response
-        else:
-            response = service.findAll()
-            return response
+        validateToken = validateJwt(request.headers.get('Authorization'))
+        if validateToken['status']:
+            if id:
+                response = service.findOne(id)
+                return response
+            else:
+                response = service.findAll()
+                return response
+        else: 
+            return JsonResponse(validateToken,status= validateToken['code'])    
 
     @swagger_auto_schema(
-        request_body=UserSerializer,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'firstName': openapi.Schema(type=openapi.TYPE_STRING),
+                'lastName': openapi.Schema(type=openapi.TYPE_STRING),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL)
+            },
+        ),
         responses={
             200: openapi.Response(
-                description="User updated successfully",
-                schema=UserSerializer
+                description="User Updated Successfully"
             ),
             400: openapi.Response(
                 description="Bad request"
@@ -66,11 +81,15 @@ class User(APIView):
         }
     )
     def patch(self, request, id=None):
-        if id and request.data:
-            response = service.updateOne(id, request.data)
-            return response
+        validateToken = validateJwt(request.headers.get('Authorization'))
+        if validateToken['status']:
+            if id and request.data:
+                response = service.updateOne(id, request.data)
+                return response
+            else:
+                return JsonResponse({"error": "UserId is missing or data is not provided"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return JsonResponse({"error": "UserId is missing or data is not provided"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(validateToken,status=validateToken['code']) 
 
     @swagger_auto_schema(
         responses={
@@ -83,13 +102,18 @@ class User(APIView):
         }
     )
     def delete(self, request, id=None):
-        if id:
-            response = service.delete(id)
-            return response
+        validateToken = validateJwt(request.headers.get('Authorization'))
+        if validateToken['status']:
+            if id:
+                response = service.delete(id)
+                return response
+            else:
+                return JsonResponse({"error": "UserId is missing"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return JsonResponse({"error": "UserId is missing"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(validateToken,status=status.HTTP_400_BAD_REQUEST) 
 
 class ChangeUserPassword(APIView):
+    
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -109,8 +133,11 @@ class ChangeUserPassword(APIView):
         }
     )
     def post(self, request, id=None):
-        if request.data and id:
-            response = service.changePassword(id, request.data)
-            return response
-        else:
-            return JsonResponse({"error": "Data or user id is missing"}, status=status.HTTP_400_BAD_REQUEST)
+        validateToken = validateJwt(request.headers.get('Authorization'))
+        if validateToken['status']:
+            if request.data and id:
+                response = service.changePassword(id, request.data)
+                return response
+            else:
+                return JsonResponse({"error": "Data or user id is missing"}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(validateToken, status = validateToken['code']) 

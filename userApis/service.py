@@ -3,13 +3,14 @@ from django.http import JsonResponse
 from .models import User
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
+
 def createUser(payload):
     try:
        structuredData = dtoToModel(payload)
        user = UserSerializer(data=structuredData)
        if user.is_valid():
          user.save()
-         return JsonResponse({"user":user.data},status=status.HTTP_201_CREATED)
+         return JsonResponse({"user":modelToDto(user.data)},status=status.HTTP_201_CREATED)
        else:
             return JsonResponse({"errors": user.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as error:
