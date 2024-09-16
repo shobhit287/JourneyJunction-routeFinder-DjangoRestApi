@@ -4,10 +4,8 @@ from . import service
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from authApis.jwt import validateJwt
-from .serializers import UserSerializer
 from drf_yasg import openapi
 from django.http import JsonResponse
-from .serializers import UserSerializer
 from . import service
 
 class User(APIView):
@@ -42,25 +40,40 @@ class User(APIView):
     @swagger_auto_schema(
         responses={
             200: openapi.Response(
-                description="User details or list of users",
-                schema=UserSerializer(many=True)
+                description="List of users",
             ),
-            404: openapi.Response(
-                description="User not found"
+            400: openapi.Response(
+                description="Bad request"
+            )
+        }
+    )
+    def get(self, request):
+        validateToken = validateJwt(request.headers.get('Authorization'))
+        if validateToken['status']:
+                response = service.findAll()
+                return response
+        else: 
+            return JsonResponse(validateToken,status= validateToken['code'])    
+
+class UserWithId(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                description="User Details"
+            ),
+            400: openapi.Response(
+                description="Bad request"
             )
         }
     )
     def get(self, request, id=None):
         validateToken = validateJwt(request.headers.get('Authorization'))
         if validateToken['status']:
-            if id:
                 response = service.findOne(id)
                 return response
-            else:
-                response = service.findAll()
-                return response
         else: 
-            return JsonResponse(validateToken,status= validateToken['code'])    
+            return JsonResponse(validateToken,status= validateToken['code'])
+        
 
     @swagger_auto_schema(
         request_body=openapi.Schema(
@@ -110,10 +123,11 @@ class User(APIView):
             else:
                 return JsonResponse({"error": "UserId is missing"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return JsonResponse(validateToken,status=status.HTTP_400_BAD_REQUEST) 
+            return JsonResponse(validateToken,status=status.HTTP_400_BAD_REQUEST)   
+
+
 
 class ChangeUserPassword(APIView):
-    
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -141,3 +155,5 @@ class ChangeUserPassword(APIView):
             else:
                 return JsonResponse({"error": "Data or user id is missing"}, status=status.HTTP_400_BAD_REQUEST)
         return JsonResponse(validateToken, status = validateToken['code']) 
+    
+

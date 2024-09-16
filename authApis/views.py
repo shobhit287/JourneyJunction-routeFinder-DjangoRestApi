@@ -32,6 +32,7 @@ class Auth(APIView):
         if payload:
             response = service.login(payload)
             return response
+
         else:
             return JsonResponse({'error':'Data is missing'}, status=status.HTTP_400_BAD_REQUEST)
         

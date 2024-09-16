@@ -3,6 +3,7 @@ from userApis.serializers import UserSerializer
 from django.http import JsonResponse
 from rest_framework import status
 from . import jwt
+import json
 from django.contrib.auth.hashers import check_password
 from emailService import sendMailService
 def login(payload):
@@ -15,9 +16,9 @@ def login(payload):
             return JsonResponse({'error':"Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
     except User.DoesNotExist:
-        return JsonResponse({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return JsonResponse({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED) 
     except Exception as error:
-       return JsonResponse({"error": error}, status=500)
+        return JsonResponse({"error": str(error)}, status=500)
 
 def forgetPassword(payload):
     try:
@@ -31,11 +32,10 @@ def forgetPassword(payload):
             else:
                 return JsonResponse(response,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     except User.DoesNotExist:
         return JsonResponse({"error": "Email id not found"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as error:
-       return JsonResponse({"error": error}, status=500)        
+       return JsonResponse({"error": str(error)}, status=500)        
 
     
 
@@ -82,5 +82,4 @@ def resetPassword(payload, token):
     except User.DoesNotExist:
         return JsonResponse({"error": "user not found"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as error:
-       print(error)
-       return JsonResponse({"error": error}, status=500) 
+       return JsonResponse({"error": str(error)}, status=500) 
