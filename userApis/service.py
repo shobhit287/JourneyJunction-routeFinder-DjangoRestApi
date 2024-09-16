@@ -24,7 +24,7 @@ def findOne(id):
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as error:
-       return JsonResponse({"error": error}, status=500)
+       return JsonResponse({"error": str(error)}, status=500)
     
 def findAll():
     try:
@@ -35,7 +35,7 @@ def findAll():
           modifiedUsersData.append(modelToDto(user)) 
        return JsonResponse({"users":modifiedUsersData},status=status.HTTP_200_OK)
     except Exception as error:
-       return JsonResponse({"error": error}, status=500)
+       return JsonResponse({"error": str(error)}, status=500)
     
 def updateOne(id, data):
     try:
@@ -51,7 +51,7 @@ def updateOne(id, data):
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as error:
-       return JsonResponse({"error": error}, status=500)
+       return JsonResponse({"error": str(error)}, status=500)
     
 def delete(id):
     try:
