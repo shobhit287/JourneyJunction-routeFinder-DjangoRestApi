@@ -5,7 +5,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'journeyJunction.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'authenticationApp.settings')
     
     # Check if we are running the server
     if 'runserver' in sys.argv:

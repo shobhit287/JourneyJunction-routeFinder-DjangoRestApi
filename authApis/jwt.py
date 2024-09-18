@@ -1,6 +1,6 @@
 import jwt 
 from rest_framework import status
-from journeyJunction.settings import JWT_KEY
+from authenticationApp.settings import JWT_KEY
 from functools import wraps
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from django.http import JsonResponse

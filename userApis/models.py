@@ -1,4 +1,5 @@
 from django.db import models
+from . userEnums import ROLES
 import uuid
 
 class User(models.Model):
@@ -11,3 +12,6 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.email
+    
+
+

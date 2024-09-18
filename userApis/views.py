@@ -16,7 +16,7 @@ class User(APIView):
                 'firstName': openapi.Schema(type=openapi.TYPE_STRING),
                 'lastName': openapi.Schema(type=openapi.TYPE_STRING),
                 'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL),
-                'password': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_PASSWORD)
+                'password': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_PASSWORD),
             },
             required=['firstName', 'lastName', 'email', 'password']
         ),
