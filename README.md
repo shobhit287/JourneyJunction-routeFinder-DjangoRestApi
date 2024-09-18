@@ -27,7 +27,6 @@ Clone this repository to your local machine using:
 git clone https://github.com/shobhit287/authentication-App-DjangoRestApi-emailService
 ```
 ### Step 2: Install Virtal Environemnt and Activate
-Clone this repository to your local machine using:
 ```bash
 pip install virtualenv
 python -m venv env
@@ -35,24 +34,27 @@ cd env/Scripts
 .\activate.ps1 #for Windows
 ```
 ### Step 3: Install Virtal Environemnt and Activate
-Clone this repository to your local machine using:
 ```bash
 cd authentication-App-DjangoRestApi-emailService
 python -r req.txt
 ```
-
+### Step 4: Install Virtal Environemnt and Activate
 add .env file
+```bash
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=postgres
 DATABASE_PASSWORD=root
 DATABASE_NAME= "demo"
-JWT_KEY =3SWASOh5HwdX3W5v9btPUi3j3QO3AOiv
+JWT_KEY = <key>
 SECRET_KEY= <your secret key>
 EMAIL_HOST_USER= <email host>
 EMAIL_HOST_PASSWORD= <email host password>
+```
 
-### Step 3: Run Server
+
+
+### Step 5: Run Server
 ```bash
 python manage.py runserver
 ```
