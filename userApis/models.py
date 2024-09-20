@@ -1,5 +1,4 @@
 from django.db import models
-from . userEnums import ROLES
 import uuid
 
 class User(models.Model):
